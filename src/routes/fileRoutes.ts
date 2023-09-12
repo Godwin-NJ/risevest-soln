@@ -1,7 +1,12 @@
-const express = require("express");
+import express from "express";
 const fileRouter = express.Router();
-const { uploadFile } = require("../controllers/fileupload");
+const {
+  uploadFile,
+  userNationality,
+  allUserInfo,
+} = require("../controllers/fileupload");
 
-fileRouter.route("/").post(uploadFile);
+fileRouter.route("/").get(allUserInfo).post(uploadFile);
+fileRouter.route("/information").post(userNationality);
 
 module.exports = fileRouter;
