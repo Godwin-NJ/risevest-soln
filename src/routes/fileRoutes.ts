@@ -7,6 +7,7 @@ const {
 } = require("../controllers/fileupload");
 
 fileRouter.route("/").get(allUserInfo).post(uploadFile);
+fileRouter.route("/:folderName?").post(uploadFile);
 fileRouter.route("/information").post(userNationality);
 
 module.exports = fileRouter;

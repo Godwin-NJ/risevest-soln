@@ -6,14 +6,15 @@ import { URL } from "url";
 import { promises } from "dns";
 const axios = require("axios");
 import express, { Response } from "express";
+const { v2: cloudinary } = require("cloudinary");
 
-const TIMEOUT = 10000;
+const TIMEOUT = 100000;
 
 function download(url: string, dest: string) {
   const uri = new URL(url);
   if (!dest) {
     dest = basename(uri.pathname);
-    console.log("dest", dest);
+    // console.log("dest", dest);
   }
   const pkg = url.toLowerCase().startsWith("https:") ? https : http;
   // console.log("uri", uri);
@@ -64,8 +65,8 @@ function download(url: string, dest: string) {
 
 const downloadUrlFileWIthAxios = async (
   url: string,
-  dest?: string,
-  res?: Response
+  res: Response,
+  dest?: string
 ) => {
   const uri = new URL(url);
   if (!dest) {
@@ -83,9 +84,8 @@ const downloadUrlFileWIthAxios = async (
   // if (response.path) {
   //   return res?.send("file already exist");
   // }
-  const file = fs.createWriteStream(dest, { flags: "wx" });
+  const file = fs.createWriteStream(dest, { flags: "wx" }); //I'm suspecting maybe the writable stream did not end
   response.data.pipe(file);
-
   return new Promise<void>((resolve, reject) => {
     response.data.on("end", () => {
       resolve();
@@ -94,8 +94,35 @@ const downloadUrlFileWIthAxios = async (
       reject(err);
     });
 
-    // response.setTimeout(() => {}, TIMEOUT); // check if this feasible from axios keys
+    // response.setTimeout(() => {
+    //   res.send("process has stopped");
+    // }, TIMEOUT); // check if this feasible from axios keys
   });
 };
 
-module.exports = { download, downloadUrlFileWIthAxios };
+const downloadingFileUsingCloudinary = async (
+  url: string,
+  res: Response,
+  customFileName?: string
+) => {
+  const uri = new URL(url);
+  if (!customFileName) {
+    customFileName = basename(uri.pathname);
+  }
+
+  const image = await cloudinary.image(`${url}`, {
+    flags: "f_auto/fl_attachment:customFileName",
+  });
+  if (!image) {
+    res.status(400).json("Error downloading Image");
+    return;
+  }
+  console.log("image", image);
+  return image;
+};
+
+module.exports = {
+  download,
+  downloadUrlFileWIthAxios,
+  downloadingFileUsingCloudinary,
+};

@@ -1,3 +1,4 @@
+import { ok } from "assert";
 import express, { Request, Response } from "express";
 import fileUpload from "express-fileupload";
 const pool = require("../db");
@@ -7,7 +8,11 @@ const {
   showAllUserInfo,
   getFileById,
 } = require("../queries/fileUploadNInfo");
-const { download, downloadUrlFileWIthAxios } = require("../utilities");
+const {
+  download,
+  downloadUrlFileWIthAxios,
+  downloadingFileUsingCloudinary,
+} = require("../utilities");
 const { v2: cloudinary } = require("cloudinary");
 const fs = require("fs");
 
@@ -45,6 +50,7 @@ const uploadFile = async (req: Request, res: Response) => {
   if (!req.files) {
     return res.send("Empty File");
   }
+
   const vestFile = req.files.file as unknown as fileUpload.UploadedFile;
 
   const maxSize = 200 * (1024 * 1024); // this equivalent to 200mb
@@ -53,10 +59,19 @@ const uploadFile = async (req: Request, res: Response) => {
     res.status(400).send("File should not be bigger than 200mb");
     return;
   }
+  // console.log(req.params.folderName);
+  // console.log(req.params);
+  // const { folderName } = req.params;
+  // console.log("folderName", folderName);
   const result = await cloudinary.uploader.upload(vestFile.tempFilePath, {
     use_filename: true,
-    folder: "risevest",
+    folder:
+      !req.params || Object.keys(req.params).length === 0
+        ? "risevest"
+        : req.params.folderName,
+    // folder: `${folderName} ? ${folderName} : risevest`,
   });
+  // console.log("result", result);
   fs.unlinkSync(vestFile.tempFilePath);
   res.status(200).json({ image: { src: result.secure_url } });
 };
@@ -69,7 +84,9 @@ const userNationality = async (req: Request, res: Response) => {
     return res.status(400).send("incomplete user information");
   }
 
-  const userInfo = await pool.query(createUserInfo, [name, image, country]);
+  const fileName = name.split(" ").join("-");
+
+  const userInfo = await pool.query(createUserInfo, [fileName, image, country]);
   if (!userInfo) {
     return res.status(400).send("error creating user");
   }
@@ -87,21 +104,21 @@ const downloadFile = async (req: Request, res: Response) => {
   if (!findUser) {
     return res.status(400).json("user not found");
   }
-  const downloadImage = findUser.rows[0].image;
-  // const downloadImageName = await findUser.rows[0].name;
+
+  const downloadImageurl = findUser.rows[0].image;
+  console.log("downloadImageurl", downloadImageurl);
   try {
-    // const fileUrl = await download(downloadImage); // core http to initiate download
-    // if (fileUrl) {
-    //   res.status(200).json("file has been downloaded");
-    // }
-    await downloadUrlFileWIthAxios(downloadImage, res); //with axios
-    // console.log("file has been downloaded", fileUrlWithAxios);
-    // if (fileUrlWithAxios) {
-    //   res.status(200).json("file has been downloaded");
-    // }
+    // downloadUrlFileWIthAxios(downloadImageurl); //with axios
+    const fileImage = await downloadingFileUsingCloudinary(
+      downloadImageurl,
+      res
+    );
+    console.log("fileImage", fileImage);
+    res.status(200).json(fileImage);
+
+    //  const imageFile =
   } catch (error: any) {
-    console.log("Download failed", error);
-    console.log(error.message);
+    res.status(400).send("Download failed");
   }
   // if (downloadImage) {
   //   const downloadFile = await download(downloadImage);

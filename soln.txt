@@ -1,13 +1,17 @@
-(1)**Simple Mode**
+(1)**Simple Mode** ( DONE) apart from out-standing
 Users can create an account with:
 email address
 password
 full name
->>>The above is done but authentication needs to be inforced <<<<<
+>>>The above is done but (authentication) needs to be inforced <<<<<
 Users can upload files up to 200mb  ----> DONE
-Users can download uploaded files   
-Users can create folders to hold files
-
+????Users can download uploaded files   >>>
+>>>>download works but issues > needs to point to the os envrionment to drop file  
+not the codebase and terminate process after a 
+set time or when stream ends or when file has been downloaded >>(Inconclusive)
+>>>Users can create folders to hold files ====> pass this as a params  ==>> DONE 
+NOTE AFTER STAGE TWO LOOK AT AUTHENTICATION
+(2)
 
 
 ??>>const maxSize = 200 * (1024 * 1024); // this equivalent to 200mb >>I'm not sure what this conversion is.
