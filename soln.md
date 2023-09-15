@@ -1,12 +1,11 @@
-# (1)**Simple Mode** ( DONE) apart from out-standing
+### **Simple Mode** ( DONE)
 
 - [x] Users can create an account with:
       email address
       password
       full name -
-  ### ADD AUTHENTICATION ---- DONE
 
-### The above is done but (authentication) needs to be inforced
+  ### ADD AUTHENTICATION ---- DONE
 
 - [x] Users can upload files up to 200mb ----> DONE
 - [x] ????Users can download uploaded files
@@ -26,10 +25,10 @@
 
 ### Envr variables to be provided
 
-- JWT_PRIVATE_KEY=
-- CLOUD_NAME=
-- CLOUD_API_KEY=
-- CLOUD_API_SECRET=
+- JWT_PRIVATE_KEY= //your jwt secret key
+- CLOUD_NAME= :point_right: cloudinary name
+- CLOUD_API_KEY= :point_right: cloudinary API_KEY
+- CLOUD_API_SECRET= :point_right: cloudinary API_SECRET
 
 > [!NOTE]
 > ??>>const maxSize = 200 x (1024 x 1024); // this equivalent to 200mb >>I'm not sure what this conversion is.
