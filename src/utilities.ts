@@ -7,8 +7,14 @@ import { promises } from "dns";
 const axios = require("axios");
 import express, { Response } from "express";
 const { v2: cloudinary } = require("cloudinary");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const TIMEOUT = 100000;
+interface tokenPayload {
+  email: string;
+  fullname: string;
+}
 
 function download(url: string, dest: string) {
   const uri = new URL(url);
@@ -121,8 +127,42 @@ const downloadingFileUsingCloudinary = async (
   return image;
 };
 
+// hash password fxn
+const hashPassword = async (password: string): Promise<string> => {
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+};
+
+// create token
+const generateToken = async (payload: tokenPayload) => {
+  const token = await jwt.sign(payload, process.env.JWT_PRIVATE_KEY, {
+    expiresIn: "1h",
+  });
+  if (!token) {
+    throw new Error("error generating token");
+  }
+  return token;
+};
+
+//check password
+const comparePassword = async (
+  password: string,
+  hash: string
+): Promise<boolean | undefined> => {
+  const match = await bcrypt.compare(password, hash);
+  if (match) {
+    return true;
+  }
+  return false;
+};
+
 module.exports = {
   download,
   downloadUrlFileWIthAxios,
   downloadingFileUsingCloudinary,
+  hashPassword,
+  generateToken,
+  comparePassword,
 };

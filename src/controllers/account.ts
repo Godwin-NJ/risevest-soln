@@ -7,6 +7,11 @@ const {
   emailExistWithPayload,
 } = require("../queries/account");
 const jwt = require("jsonwebtoken");
+const {
+  hashPassword,
+  generateToken,
+  comparePassword,
+} = require("../utilities");
 
 interface tokenPayload {
   email: string;
@@ -17,37 +22,6 @@ interface MyUserRequest extends Request {
   // Use `user?:` here instead of `user:`.
   user?: tokenPayload;
 }
-
-// hash password fxn
-const hashPassword = async (password: string): Promise<string> => {
-  const saltRounds = 10;
-  const salt = await bcrypt.genSalt(saltRounds);
-  const hash = await bcrypt.hash(password, salt);
-  return hash;
-};
-
-// create token
-const generateToken = async (payload: tokenPayload) => {
-  const token = await jwt.sign(payload, process.env.PRIVATE_KEY, {
-    expiresIn: "1h",
-  });
-  if (!token) {
-    throw new Error("error generating token");
-  }
-  return token;
-};
-
-//check password
-const comparePassword = async (
-  password: string,
-  hash: string
-): Promise<boolean | undefined> => {
-  const match = await bcrypt.compare(password, hash);
-  if (match) {
-    return true;
-  }
-  return false;
-};
 
 const registerUser = async (req: Request, res: Response) => {
   // check if email exist
