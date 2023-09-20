@@ -8,7 +8,7 @@ const downLoadRouter = require("./routes/downLoadRouter");
 const fileUpload = require("express-fileupload");
 const { v2: cloudinary } = require("cloudinary");
 
-const { authorizationMD } = require("./Middleware/userLoginMiddleware");
+const { authentication } = require("./Middleware/userLoginMiddleware");
 
 // middleware
 app.use(express.static(__dirname + "/public"));
@@ -29,8 +29,8 @@ app.get("/", (req: Request, res: Response): void => {
 
 // route middlware
 app.use("/api/v1/user", userRoute);
-app.use("/api/v1/upload", authorizationMD, fileRouter); // added the authorization middleware
-app.use("/api/v1/download", authorizationMD, downLoadRouter); // added the authorization middleware
+app.use("/api/v1/upload", authentication, fileRouter); // added the authorization middleware
+app.use("/api/v1/download", authentication, downLoadRouter); // added the authorization middleware
 
 const PORT = process.env.PORT || 3000;
 

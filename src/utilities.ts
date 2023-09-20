@@ -14,6 +14,7 @@ const TIMEOUT = 100000;
 interface tokenPayload {
   email: string;
   fullname: string;
+  role: string[];
 }
 
 function download(url: string, dest: string) {

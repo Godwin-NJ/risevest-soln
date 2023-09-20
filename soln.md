@@ -15,7 +15,7 @@
 
 ### HARD MODE
 
-- [ ] An admin user type for managing the content uploaded // This will Involve authorization
+- [x] An admin user type for managing the content uploaded // This will Involve authorization
 
 ### Task (ongoing)
 
@@ -25,7 +25,7 @@
 
 ### Envr variables to be provided
 
-- JWT_PRIVATE_KEY= //your jwt secret key
+- JWT_PRIVATE_KEY= :point_right: your jwt secret key
 - CLOUD_NAME= :point_right: cloudinary name
 - CLOUD_API_KEY= :point_right: cloudinary API_KEY
 - CLOUD_API_SECRET= :point_right: cloudinary API_SECRET
@@ -34,3 +34,8 @@
 > ??>>const maxSize = 200 x (1024 x 1024); // this equivalent to 200mb >>I'm not sure what this conversion is.
 > Check on John Smilga Course to re-confirm how it came about.
 > https://nodejs.org/api/buffer.html#buffer_class_method_buffer_bytelength_string_encoding > https://stackoverflow.com/questions/46959556/byte-size-of-buffer-javascript-node
+
+### checkout
+
+- how to create schema's and models in postgressql
+- trying using ssh to access pgadmin4

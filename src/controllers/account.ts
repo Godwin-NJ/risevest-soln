@@ -5,6 +5,9 @@ const {
   createUser,
   emailExist,
   emailExistWithPayload,
+  createUserRole,
+  getAllRole,
+  updateDefaultUserRole,
 } = require("../queries/account");
 const jwt = require("jsonwebtoken");
 const {
@@ -12,10 +15,12 @@ const {
   generateToken,
   comparePassword,
 } = require("../utilities");
+import { IGetAuthUserRequest } from "../LocalTypes";
 
 interface tokenPayload {
   email: string;
   fullname: string;
+  role: string[];
 }
 
 interface MyUserRequest extends Request {
@@ -71,17 +76,54 @@ const loginUser = async (req: MyUserRequest, res: Response) => {
     throw new Error("Invalid login credentials");
   }
   //generate token
-  const token = await generateToken({ email: email, fullname: user.fullname });
+  const token = await generateToken({
+    email: email,
+    fullname: user.fullname,
+    role: user.role,
+  });
 
   const userLoginPayload = { email, fullname: user.fullname, token };
   //   console.log(req.user);
-  req.user = userLoginPayload;
+  // req.user = userLoginPayload;
   res.status(200).json(userLoginPayload);
   //set req.user
   //send user payload
 };
 
+//creating user role
+const createRole = async (req: Request, res: Response) => {
+  const { roleid, role } = req.body;
+  const user_Role = await pool.query(createUserRole, [roleid, role]);
+  if (!user_Role) {
+    res.status(400).send("error creating user");
+  }
+  res.status(200).json(user_Role.rowCount);
+};
+
+const getRoles = async (req: Request, res: Response) => {
+  const roles = await pool.query(getAllRole);
+  if (!roles) {
+    res.status(400).json("error getting roles");
+  }
+  res.status(200).json(roles.rows);
+};
+
+const UpdateUserRole = async (req: IGetAuthUserRequest, res: Response) => {
+  const { role, email } = req.body;
+  // const userEmail = req.user.email;
+  // const args = Object.values(req.body);
+  // const keys = Object.keys(req.body)
+  const user = await pool.query(updateDefaultUserRole, [role, email]);
+  if (!user) {
+    throw new Error("Failed to update user role");
+  }
+  res.status(200).json("updated");
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  createRole,
+  getRoles,
+  UpdateUserRole,
 };
