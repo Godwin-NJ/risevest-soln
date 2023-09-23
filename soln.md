@@ -21,7 +21,20 @@
 
 ##### have an unsafe Endpoint , where ID of the content is passed into it and when triggered the file is ##### assigned an unsafe Boolean and deleted as well. ( array of ID's of intended items/videos to delete)
 
-- [ ] Users can stream videos and audio > [!NOTE] > Revisit this and Get logic together.
+> [!NOTE]
+> below is the outstanding from the hard mode.
+
+- [ ] Users can stream videos and audio
+
+### Ultra Mode
+
+- [ ] Compression
+- [ ] File History
+
+### Bonus
+
+- [ ] Revokable session management
+- [ ] Multiple admin reviews before file is deleted
 
 ### Envr variables to be provided
 

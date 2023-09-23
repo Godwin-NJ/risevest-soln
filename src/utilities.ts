@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { PathLike, WriteStream } from "fs";
 import https from "https";
 import http from "http";
 import { basename } from "path";
@@ -73,7 +73,7 @@ function download(url: string, dest: string) {
 const downloadUrlFileWIthAxios = async (
   url: string,
   res: Response,
-  dest?: string
+  dest?: string | PathLike
 ) => {
   const uri = new URL(url);
   if (!dest) {
@@ -81,29 +81,38 @@ const downloadUrlFileWIthAxios = async (
   }
   const pkg = url.toLowerCase().startsWith("https:") ? https : http;
 
-  const response = await axios({
-    method: "get",
-    url: url,
-    responseType: "stream",
-  });
-
-  // // console.log(response);
-  // if (response.path) {
-  //   return res?.send("file already exist");
-  // }
-  const file = fs.createWriteStream(dest, { flags: "wx" }); //I'm suspecting maybe the writable stream did not end
-  response.data.pipe(file);
-  return new Promise<void>((resolve, reject) => {
-    response.data.on("end", () => {
-      resolve();
-    });
-    response.data.on("error", (err: any) => {
-      reject(err);
+  return new Promise<void>(async (resolve, reject) => {
+    const response_stream = await axios({
+      method: "get",
+      url: url,
+      responseType: "stream",
     });
 
-    // response.setTimeout(() => {
-    //   res.send("process has stopped");
-    // }, TIMEOUT); // check if this feasible from axios keys
+    const file = fs.createWriteStream(dest as any as PathLike, {
+      flags: "wx",
+    });
+    // console.log("file", file);
+    file.on("error", (err: any) => {
+      //extend the make err.code in the error type( typescript)
+      if (err.code === "EEXIST") {
+        res.status(302).json("file already exist");
+      }
+    });
+
+    response_stream.data
+      .on("end", () => {
+        file.end();
+        res.status(200).json(file.path);
+        // console.log(file, "file-written-into-file-end");
+        resolve();
+      })
+      .on("error", (err: any) => {
+        file.destroy();
+        // console.log("eror-code", err);
+        fs.unlink(dest as any as PathLike, () => reject(err));
+        // reject(err);
+      })
+      .pipe(file);
   });
 };
 

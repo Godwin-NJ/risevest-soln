@@ -112,19 +112,24 @@ const downloadFile = async (req: Request, res: Response) => {
   }
 
   const downloadImageurl = findUser.rows[0].image;
-  console.log("downloadImageurl", downloadImageurl);
+  // console.log("downloadImageurl", downloadImageurl);
   try {
-    // downloadUrlFileWIthAxios(downloadImageurl); //with axios
-    const fileImage = await downloadingFileUsingCloudinary(
-      downloadImageurl,
-      res
-    );
-    console.log("fileImage", fileImage);
-    res.status(200).json(fileImage);
+    downloadUrlFileWIthAxios(downloadImageurl, res); //with axios
+    // const fileImage = await
+    // if(!fileImage){
+
+    // }
+    // const fileImage = await downloadingFileUsingCloudinary(
+    //   downloadImageurl,
+    //   res
+    // );
+    // console.log("fileImage", fileImage);
+    // res.status(200).json(fileImage);
 
     //  const imageFile =
   } catch (error: any) {
-    res.status(400).send("Download failed");
+    // console.log("fileImage", error);
+    res.status(400).send(`Download failed with error : ${error}`);
   }
   // if (downloadImage) {
   //   const downloadFile = await download(downloadImage);
