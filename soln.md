@@ -16,12 +16,12 @@
 ### HARD MODE
 
 - [x] An admin user type for managing the content uploaded // This will Involve authorization
+- [x] Admins can mark pictures and videos as unsafe //authorization goes in here
+- [x] Unsafe files automatically get deleted
 
-### Task (ongoing)
+##### have an unsafe Endpoint , where ID of the content is passed into it and when triggered the file is ##### assigned an unsafe Boolean and deleted as well. ( array of ID's of intended items/videos to delete)
 
-- [ ] Admins can mark pictures and videos as unsafe //authorization goes in here
-- [ ] Unsafe files automatically get deleted
-- [ ] Users can stream videos and audio
+- [ ] Users can stream videos and audio > [!NOTE] > Revisit this and Get logic together.
 
 ### Envr variables to be provided
 

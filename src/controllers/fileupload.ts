@@ -7,6 +7,9 @@ const {
   createUserInfo,
   showAllUserInfo,
   getFileById,
+  markFilesUnsafe,
+  updateToUnsafe,
+  deleteFile,
 } = require("../queries/fileUploadNInfo");
 const {
   download,
@@ -77,8 +80,9 @@ const uploadFile = async (req: Request, res: Response) => {
 };
 // attach image to a product >>> User nationality
 
-const userNationality = async (req: Request, res: Response) => {
+const uploadUserDeatils = async (req: Request, res: Response) => {
   const { name, image, country } = req.body;
+  console.log(req.body);
 
   if (!name || !image || !country) {
     return res.status(400).send("incomplete user information");
@@ -87,9 +91,11 @@ const userNationality = async (req: Request, res: Response) => {
   const fileName = name.split(" ").join("-");
 
   const userInfo = await pool.query(createUserInfo, [fileName, image, country]);
+  console.log(userInfo, "userInfo");
   if (!userInfo) {
     return res.status(400).send("error creating user");
   }
+  console.log({ userInfo });
   res.status(200).json("user information created");
 };
 
@@ -140,9 +146,37 @@ const downloadFile = async (req: Request, res: Response) => {
   // });
 };
 
+const updateAndDeleteUnsafeFile = async (req: Request, res: Response) => {
+  // the payload will be an array of files marked as unsafe and will be deleted subsequetly
+  // string[] as payload
+  const ids = req.body;
+
+  const findFiles = await pool.query(markFilesUnsafe, [ids]);
+
+  if (!findFiles) {
+    res.status(400).send("Files does not exist");
+  }
+
+  const selectedIds = await findFiles.rows.map((item: any) => item.userid);
+  const updateIsSafeColumn = await pool.query(updateToUnsafe, [selectedIds]);
+  if (!updateIsSafeColumn) {
+    res.status(400).send("Error Updating row(s)");
+  }
+  const deleteUnsafeFile = await pool.query(deleteFile, [selectedIds]);
+  if (!deleteUnsafeFile) {
+    res.status(400).json("error deleting ");
+  }
+
+  res
+    .status(200)
+    .json(`${deleteUnsafeFile.rowCount} item(s) updated and deleted`);
+  // res.status(200).json(updateIsSafeColumn.rowCount);
+};
+
 module.exports = {
   uploadFile,
-  userNationality,
+  uploadUserDeatils,
   allUserInfo,
   downloadFile,
+  updateAndDeleteUnsafeFile,
 };
