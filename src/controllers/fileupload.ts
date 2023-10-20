@@ -120,17 +120,15 @@ const downloadFile = async (req: Request, res: Response) => {
   // console.log("downloadImageurl", downloadImageurl);
   try {
     //with axios and read / write streams ( using FS module)
-    downloadUrlFileWIthAxios(downloadFileurl, res);
+    // downloadUrlFileWIthAxios(downloadFileurl, res);
 
     //Using cloduinary
-    // const fileImage = await downloadingFileUsingCloudinary(
-    //   downloadFileurl,
-    //   res
-    // );
+    const fileImage = await downloadingFileUsingCloudinary(
+      downloadFileurl,
+      res
+    );
     // console.log("fileImage", fileImage);
-    // res.status(200).json(fileImage);
-
-    //  const imageFile =
+    res.status(200).json(fileImage);
   } catch (error: any) {
     // console.log("fileImage", error);
     res.status(400).send(`Download failed with error : ${error}`);
