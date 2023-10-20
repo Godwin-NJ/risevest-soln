@@ -7,6 +7,8 @@
 
   ### ADD AUTHENTICATION ---- DONE
 
+  ### The authentication process was changed from JWT TO Session Authentication using Redis and Cookies
+
 - [x] Users can upload files up to 200mb ----> DONE
 - [x] ????Users can download uploaded files
       download works but issues > needs to point to the os envrionment to drop file
@@ -19,7 +21,7 @@
 - [x] Admins can mark pictures and videos as unsafe //authorization goes in here
 - [x] Unsafe files automatically get deleted
 
-##### have an unsafe Endpoint , where ID of the content is passed into it and when triggered the file is ##### assigned an unsafe Boolean and deleted as well. ( array of ID's of intended items/videos to delete)
+##### have an unsafe Endpoint , where ID of the content is passed into it and when triggered the file ##### is assigned an unsafe Boolean and deleted as well. ( array of ID's of intended items/videos to delete)
 
 > [!NOTE]
 > below is the outstanding from the hard mode.
@@ -29,11 +31,14 @@
 ### Ultra Mode
 
 - [ ] Compression
+
+###### NOTE - CLoudinary has compression methods. Challenge - Which file compression method can be used for different file type e.g images, pdf , videos etc
+
 - [ ] File History
 
 ### Bonus
 
-- [ ] Revokable session management
+- [x] Revokable session management
 - [ ] Multiple admin reviews before file is deleted
 
 ### Envr variables to be provided
@@ -42,6 +47,7 @@
 - CLOUD_NAME= :point_right: cloudinary name
 - CLOUD_API_KEY= :point_right: cloudinary API_KEY
 - CLOUD_API_SECRET= :point_right: cloudinary API_SECRET
+- REDIS_SECRET= :point_right: Redis Secret
 
 > [!NOTE]
 > ??>>const maxSize = 200 x (1024 x 1024); // this equivalent to 200mb >>I'm not sure what this conversion is.

@@ -6,6 +6,7 @@ const {
   createRole,
   getRoles,
   UpdateUserRole,
+  sessionLogout,
 } = require("../controllers/account");
 const {
   authentication,
@@ -14,6 +15,7 @@ const {
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.get("/logout", sessionLogout);
 router
   .route("/roles")
   .get(authentication, getRoles)

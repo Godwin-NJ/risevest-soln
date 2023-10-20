@@ -133,7 +133,7 @@ const downloadingFileUsingCloudinary = async (
     res.status(400).json("Error downloading Image");
     return;
   }
-  console.log("image", image);
+  // console.log("image", image);
   return image;
 };
 

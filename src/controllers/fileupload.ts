@@ -73,6 +73,7 @@ const uploadFile = async (req: Request, res: Response) => {
         ? "risevest"
         : req.params.folderName,
     // folder: `${folderName} ? ${folderName} : risevest`,
+    // transformation: [{ quality: "auto" }],
   });
   // console.log("result", result);
   fs.unlinkSync(vestFile.tempFilePath);
@@ -81,16 +82,20 @@ const uploadFile = async (req: Request, res: Response) => {
 // attach image to a product >>> User nationality
 
 const uploadUserDeatils = async (req: Request, res: Response) => {
-  const { name, image, country } = req.body;
+  const { name, filepath, country } = req.body;
   console.log(req.body);
 
-  if (!name || !image || !country) {
+  if (!name || !filepath || !country) {
     return res.status(400).send("incomplete user information");
   }
 
   const fileName = name.split(" ").join("-");
 
-  const userInfo = await pool.query(createUserInfo, [fileName, image, country]);
+  const userInfo = await pool.query(createUserInfo, [
+    fileName,
+    filepath,
+    country,
+  ]);
   console.log(userInfo, "userInfo");
   if (!userInfo) {
     return res.status(400).send("error creating user");
@@ -111,16 +116,15 @@ const downloadFile = async (req: Request, res: Response) => {
     return res.status(400).json("user not found");
   }
 
-  const downloadImageurl = findUser.rows[0].image;
+  const downloadFileurl = findUser.rows[0].filepath;
   // console.log("downloadImageurl", downloadImageurl);
   try {
-    downloadUrlFileWIthAxios(downloadImageurl, res); //with axios
-    // const fileImage = await
-    // if(!fileImage){
+    //with axios and read / write streams ( using FS module)
+    downloadUrlFileWIthAxios(downloadFileurl, res);
 
-    // }
+    //Using cloduinary
     // const fileImage = await downloadingFileUsingCloudinary(
-    //   downloadImageurl,
+    //   downloadFileurl,
     //   res
     // );
     // console.log("fileImage", fileImage);
@@ -176,6 +180,16 @@ const updateAndDeleteUnsafeFile = async (req: Request, res: Response) => {
     .status(200)
     .json(`${deleteUnsafeFile.rowCount} item(s) updated and deleted`);
   // res.status(200).json(updateIsSafeColumn.rowCount);
+};
+
+// FILE HISTORY >>>> fs.watch is not the right soln to get file history , inquire on what's best
+const fileHistory = async (req: Request, res: Response) => {
+  const fileId = req.params.id;
+  const file = await pool.query(getFileById, [fileId]);
+  const { userid, name, filepath } = file;
+  // const watchFile = fs.watch(filepath, (eventType:string, filename:string)=> {
+
+  // })
 };
 
 module.exports = {

@@ -2,8 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 const jwt = require("jsonwebtoken");
 import { IGetAuthUserRequest } from "../LocalTypes";
 
-//AUTHENTICATION MIDDLEWARE
-const authentication = async (
+//AUTHENTICATIONJWT MIDDLEWARE FOR JWT ( deprecated as we're using redis session cookies)
+const authenticationJWT = async (
   req: IGetAuthUserRequest,
   res: Response,
   next: NextFunction
@@ -25,10 +25,24 @@ const authentication = async (
   }
 };
 
+//when using redis session cookie for authentication
+const authentication = async (
+  req: IGetAuthUserRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json("unauthorized user");
+  }
+  next();
+};
+
 const authorizationMD = (roles: string) => {
   // [admin, user,HR-Human Resource,accouts/finance]
   return (req: IGetAuthUserRequest, res: Response, next: NextFunction) => {
-    const reqUser = req.user.role;
+    const reqUser = req.session.user.role;
+    // console.log(reqUser, "reqUser");
+    // const reqUser = req.user.role; //when using jwt
     // console.log(reqUser, "reqUser");
     // console.log(roles, "roles");
     // const checkRole = role.some((singleRole) => console.log(singleRole,'singleRole'));

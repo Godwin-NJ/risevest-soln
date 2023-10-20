@@ -15,7 +15,8 @@ const {
   generateToken,
   comparePassword,
 } = require("../utilities");
-import { IGetAuthUserRequest } from "../LocalTypes";
+import { IGetAuthUserRequest, IError } from "../LocalTypes";
+// const redis = require("ioredis");
 
 interface tokenPayload {
   email: string;
@@ -26,6 +27,7 @@ interface tokenPayload {
 interface MyUserRequest extends Request {
   // Use `user?:` here instead of `user:`.
   user?: tokenPayload;
+  session?: any;
 }
 
 const registerUser = async (req: Request, res: Response) => {
@@ -66,6 +68,7 @@ const loginUser = async (req: MyUserRequest, res: Response) => {
     throw new Error("Account does not exist ");
   }
   const user = userEmail.rows[0];
+  // console.log(user, "user");
   //   console.log(userEmail.rows[0]);
 
   //compare hash password with current password
@@ -75,19 +78,22 @@ const loginUser = async (req: MyUserRequest, res: Response) => {
     // console.log("valid login credentials");
     throw new Error("Invalid login credentials");
   }
-  //generate token
-  const token = await generateToken({
-    email: email,
-    fullname: user.fullname,
-    role: user.role,
-  });
+  //------------------------//---JWT TOKEN--
+  //generate token >>>>the token logic below is used when JWT is used for the authentication process rather
+  //than cookie session
+  // const token = await generateToken({
+  //   email: email,
+  //   fullname: user.fullname,
+  //   role: user.role,
+  // });
+  // const userLoginPayload = { email, fullname: user.fullname, token };
+  // res.status(200).json(userLoginPayload);
 
-  const userLoginPayload = { email, fullname: user.fullname, token };
-  //   console.log(req.user);
-  // req.user = userLoginPayload;
-  res.status(200).json(userLoginPayload);
-  //set req.user
-  //send user payload
+  // -----------------------//--Cookie Session
+  const sessionUser = { ...user };
+  req.session.user = sessionUser;
+  req.user = { email, fullname: user.fullname, role: user.role };
+  res.status(200).json({ email, fullname: user.fullname, role: user.role });
 };
 
 //creating user role
@@ -120,10 +126,21 @@ const UpdateUserRole = async (req: IGetAuthUserRequest, res: Response) => {
   res.status(200).json("updated");
 };
 
+const sessionLogout = async (req: IGetAuthUserRequest, res: Response) => {
+  await req.session.destroy((err: any) => {
+    if (err) {
+      return res.status(400).json(`Error revoking session : err.message`);
+    }
+
+    res.status(200).json("session revoked");
+  });
+};
+
 module.exports = {
   registerUser,
   loginUser,
   createRole,
   getRoles,
   UpdateUserRole,
+  sessionLogout,
 };
