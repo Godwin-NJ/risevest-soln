@@ -18,9 +18,13 @@ router.post("/login", loginUser);
 router.get("/logout", sessionLogout);
 router
   .route("/roles")
-  .get(authentication, getRoles)
-  .post(authentication, createRole)
-  .put(authentication, authorizationMD("admin"), UpdateUserRole);
+  // .get(authentication, getRoles)
+  .get(getRoles)
+  .post(authorizationMD("admin"), createRole)
+  // .post(createRole)
+  // .post(authentication, createRole)
+  .put(authorizationMD("admin"), UpdateUserRole);
+// .put(authentication, authorizationMD("admin"), UpdateUserRole);
 // .put(authentication, UpdateUserRole);
 
 module.exports = router;

@@ -39,26 +39,25 @@ const registerUser = async (req: Request, res: Response) => {
   }
 
   const userEmail = await pool.query(emailExist, [email]);
-  console.log({ user: userEmail.rows });
+  // console.log({ user: userEmail.rows });
   if (userEmail.rows.length) {
-    throw new Error("Email already exist");
+    // throw new Error("Email already exist");
+    res.status(400).json("Email already exist");
+    return;
     // console.log("email already exist");
   }
 
   //validate email address (Pending)
   const userPassword = await hashPassword(password);
 
-  try {
-    const registerUser = await pool.query(createUser, [
-      fullname,
-      email,
-      userPassword,
-    ]);
-    if (registerUser) {
-      res.status(201).json("user account created");
-    }
-  } catch (error) {
-    console.log(error);
+  const registerUser = await pool.query(createUser, [
+    fullname,
+    email,
+    userPassword,
+  ]);
+  if (registerUser) {
+    res.status(201).json("user account created");
+    return;
   }
 };
 const loginUser = async (req: MyUserRequest, res: Response) => {
@@ -103,7 +102,7 @@ const createRole = async (req: Request, res: Response) => {
   if (!user_Role) {
     res.status(400).send("error creating user");
   }
-  res.status(200).json(user_Role.rowCount);
+  res.status(201).json(user_Role.rowCount);
 };
 
 const getRoles = async (req: Request, res: Response) => {

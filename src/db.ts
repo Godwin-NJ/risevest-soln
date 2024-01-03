@@ -1,4 +1,4 @@
-import { Pool, Client } from "pg";
+import { Pool } from "pg";
 
 const pool = new Pool({
   user: "postgres",

@@ -41,6 +41,10 @@
 - [x] Revokable session management
 - [ ] Multiple admin reviews before file is deleted
 
+###
+
+- [ ] Unit tests are a must, submissions without tests will be ignored.
+
 ### Envr variables to be provided
 
 - JWT_PRIVATE_KEY= :point_right: your jwt secret key
@@ -54,7 +58,11 @@
 > Check on John Smilga Course to re-confirm how it came about.
 > https://nodejs.org/api/buffer.html#buffer_class_method_buffer_bytelength_string_encoding > https://stackoverflow.com/questions/46959556/byte-size-of-buffer-javascript-node
 
-### checkout
+#### Tools Stack
 
-- how to create schema's and models in postgressql
-- trying using ssh to access pgadmin4
+- NodeJs (TypeScript & Express) or Golang
+- Postgres for pure data
+- Redis
+- Docker
+- Postman
+- S3 or any other shared cloud storage provider

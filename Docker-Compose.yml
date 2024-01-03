@@ -1,0 +1,26 @@
+version: "3.0"
+services:
+  node-app:
+    image: docker.io/godwina/risevest-2022-backend:v1
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+
+  # db:
+  #   image: postgres:16-alpine
+  #   restart: always
+  #   environment:
+  #     POSTGRES_PASSWORD: excelG747
+  #   ports:
+  #     - "5432:5432"
+
+  # redis:
+  #   image: redis:7.0-alpine
+  #   environment:
+  #     - REDIS_SECRET=redisiosecret
