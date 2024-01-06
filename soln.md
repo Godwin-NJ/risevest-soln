@@ -57,6 +57,8 @@
 > ??>>const maxSize = 200 x (1024 x 1024); // this equivalent to 200mb >>I'm not sure what this conversion is.
 > Check on John Smilga Course to re-confirm how it came about.
 > https://nodejs.org/api/buffer.html#buffer_class_method_buffer_bytelength_string_encoding > https://stackoverflow.com/questions/46959556/byte-size-of-buffer-javascript-node
+> Your V2 set-top on Docker desktop setting should be disabled since we are using V3
+> Since we are using external DB with a docker container, to connect application to DB we have to set the host to host.docker.internal instead of localhost
 
 #### Tools Stack
 

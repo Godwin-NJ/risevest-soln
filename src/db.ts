@@ -2,7 +2,8 @@ import { Pool } from "pg";
 
 const pool = new Pool({
   user: "postgres",
-  host: "localhost",
+  // host: "localhost",
+  host: "host.docker.internal",
   database: "risevestdb",
   password: "excelG747",
   port: 5432,
