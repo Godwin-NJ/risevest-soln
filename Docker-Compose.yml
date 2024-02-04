@@ -11,6 +11,7 @@ services:
       context: .
       dockerfile: Dockerfile
     tty: true
+    
 
   # db:
   #   image: postgres:16-alpine
@@ -20,7 +21,11 @@ services:
   #   ports:
   #     - "5432:5432"
 
-  # redis:
-  #   image: redis:7.0-alpine
-  #   environment:
-  #     - REDIS_SECRET=redisiosecret
+  redis:
+    image: redis:7.0-alpine
+    environment:
+      - REDIS_SECRET=redisiosecret
+    volumes:
+      - redis_data:/data
+volumes:
+  redis_data:
