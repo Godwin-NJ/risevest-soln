@@ -1,4 +1,4 @@
-### **Simple Mode** ( DONE)
+#### https://github.com/risevest/backend-test
 
 - [x] Users can create an account with:
       email address
